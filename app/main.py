@@ -1,33 +1,24 @@
-#!/usr/bin/env python
-#
-# Copyright 2007 Google Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
+
 from google.appengine.ext import webapp
-from google.appengine.ext.webapp import util
+import jinja2, os
 
+current_dir = os.path.dirname(__file__)
+current_path = os.path.abspath(current_dir)
 
-class MainHandler(webapp.RequestHandler):
-    def get(self):
-        self.response.out.write('Hello world!')
+jinja_environment = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(os.path.join(current_dir, 'templates')))
 
+def render(template_file, data = {}):
+    template = jinja_environment.get_template(template_file)
+    response = webapp.get_request().app.response_class()
+    response.out.write(template.render(data))
+    return response
 
-def main():
-    application = webapp.WSGIApplication([('/', MainHandler)],
-                                         debug=True)
-    util.run_wsgi_app(application)
-
-
-if __name__ == '__main__':
-    main()
+def handle(route):
+    def handler(request):
+        return render('%s.html' % route)
+    return handler
+        
+application = webapp.WSGIApplication([
+        ('/', handle('index'))
+    ], debug=True)

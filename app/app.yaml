@@ -1,6 +1,7 @@
-application: new-project-template
+application: sudhirjonathan
 version: 1
-runtime: python
+runtime: python27
+threadsafe: yes
 api_version: 1
 
 handlers:
@@ -8,5 +9,17 @@ handlers:
   static_files: favicon.ico
   upload: favicon\.ico
 
-- url: .*
-  script: main.py
+- url: /stylesheets
+  static_dir: css/stylesheets/
+  
+- url: /.*
+  script: main.application
+  
+libraries:
+- name: markupsafe
+  version: "0.15"
+- name: jinja2
+  version: "2.6"
+
+builtins:
+- appstats: on

@@ -3,3 +3,6 @@ var
 eggs
 .installed.cfg
 app/lib/dist
+app/css/.sass-cache
+.DS_Store
+*.pyc
